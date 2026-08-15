@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatsCards } from "./stats-cards";
 import { TimeSpentChart } from "./time-spent-chart";
 import { RatingChart } from "./rating-chart";
+import { RatingAtGame } from "./rating-at-game";
 import { DashboardSkeleton } from "./loading-skeleton";
 import { AnalyticsResponse, GameType, TimeRange } from "@/lib/data-processor";
 
@@ -103,42 +104,44 @@ export function Dashboard({ username }: { username: string }) {
         </div>
       )}
 
+      {data && <StatsCards summary={data.summary[gameType]} />}
+
+      {/* Owns its own query, so it stays usable while the time-range data
+          above is loading or has failed. */}
+      <RatingAtGame username={username} gameType={gameType} />
+
       {data && (
-        <>
-          <StatsCards summary={data.summary[gameType]} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-slate-800 border-slate-700">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-slate-300 font-medium">
+                Hours Played Over Time
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TimeSpentChart
+                data={data.timeSeries}
+                gameType={gameType}
+                timeRange={timeRange}
+              />
+            </CardContent>
+          </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-slate-300 font-medium">
-                  Hours Played Over Time
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TimeSpentChart
-                  data={data.timeSeries}
-                  gameType={gameType}
-                  timeRange={timeRange}
-                />
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm text-slate-300 font-medium">
-                  Rating Over Time
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RatingChart
-                  data={data.timeSeries}
-                  gameType={gameType}
-                  timeRange={timeRange}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </>
+          <Card className="bg-slate-800 border-slate-700">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-slate-300 font-medium">
+                Rating Over Time
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RatingChart
+                data={data.timeSeries}
+                gameType={gameType}
+                timeRange={timeRange}
+              />
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );

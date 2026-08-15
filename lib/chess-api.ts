@@ -48,6 +48,15 @@ export async function getPlayerStats(username: string): Promise<PlayerStats> {
   return res.json();
 }
 
+/** Pulls the year/month off a `.../games/YYYY/MM` archive URL. */
+export function parseArchiveUrl(url: string): { year: number; month: number } {
+  const parts = url.split("/");
+  return {
+    year: parseInt(parts[parts.length - 2], 10),
+    month: parseInt(parts[parts.length - 1], 10),
+  };
+}
+
 export async function getArchives(username: string): Promise<string[]> {
   const res = await fetchWithRetry(
     `${CHESS_API}/player/${username}/games/archives`
