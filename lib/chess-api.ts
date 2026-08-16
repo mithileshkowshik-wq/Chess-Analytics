@@ -4,9 +4,19 @@ const headers = {
   "User-Agent": "chess-analytics-app/1.0 (contact: mithileshkowshik@gmail.com)",
 };
 
+/**
+ * `next` is Next's own addition to RequestInit. Spelling it out here keeps this
+ * file compiling under plain tsc too, which is how the offline check scripts
+ * run it.
+ */
+const NO_CACHE: RequestInit & { next?: { revalidate: number } } = {
+  headers,
+  next: { revalidate: 0 },
+};
+
 async function fetchWithRetry(url: string, retries = 3): Promise<Response> {
   for (let i = 0; i < retries; i++) {
-    const res = await fetch(url, { headers, next: { revalidate: 0 } });
+    const res = await fetch(url, NO_CACHE);
     if (res.status === 429) {
       await new Promise((r) => setTimeout(r, 1000 * (i + 1)));
       continue;

@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# compiled output of the offline check scripts
+.checks/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

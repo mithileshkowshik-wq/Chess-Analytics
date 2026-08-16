@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:build": "tsc lib/*.ts lib/agent/*.ts scripts/*.ts --outDir .checks --module commonjs --target es2022 --moduleResolution node --skipLibCheck --esModuleInterop",
+    "check": "npm run check:build && node .checks/scripts/check-facts.js && node .checks/scripts/check-tools.js && node .checks/scripts/check-agent.js",
+    "check:llm": "npm run check:build && node --env-file=.env.local .checks/scripts/check-openrouter.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

@@ -63,18 +63,43 @@ tool-calling model OpenRouter serves.
 > **Set a spend limit on your key.** This app has no login, so the chat endpoint
 > is public — anyone who finds your deployed URL can spend credits on it.
 
-## Verification
+### Enabling the assistant
 
-There is no test runner. The offline checks run the real modules against
-synthetic fixtures with no network:
+**Locally:**
 
 ```bash
-npx tsc lib/*.ts lib/agent/*.ts scripts/*.ts --outDir /tmp/cc \
-  --module commonjs --target es2022 --moduleResolution node \
-  --skipLibCheck --esModuleInterop
-node /tmp/cc/scripts/check-facts.js   # game parsing + rating-series regression
-node /tmp/cc/scripts/check-tools.js   # the nine agent tools
-node /tmp/cc/scripts/check-agent.js   # the tool-calling loop, stubbed transport
+cp .env.example .env.local          # if you haven't already
+# edit .env.local and set OPENROUTER_API_KEY=sk-or-v1-...
+npm run check:llm                   # confirms the key and the model work
+npm run dev
+```
+
+`.env.local` is gitignored. Note the variable is `OPENROUTER_API_KEY` — one
+word, no underscore between OPEN and ROUTER; a near-miss name leaves the panel
+silently disabled.
+
+**On Vercel:** Project → Settings → Environment Variables → add
+`OPENROUTER_API_KEY` for Production, Preview and Development, then redeploy.
+Values are bound at deploy time, so an existing deployment will not pick it up
+until it is rebuilt.
+
+## Verification
+
+There is no test runner. `npm run check` compiles `lib/` and `scripts/` and runs
+the offline checks against synthetic fixtures — no network, no API key:
+
+```bash
+npm run check       # game parsing, the rating-series regression,
+                    # the nine tools, and the tool-calling loop
+```
+
+`npm run check:llm` is the one check that really calls OpenRouter. It uses
+synthetic games with known answers, so a wrong number means the model is
+inventing rather than reading tool output. It reports which tools the model
+chose and what the questions cost:
+
+```bash
+npm run check:llm
 ```
 
 ## Deployment
