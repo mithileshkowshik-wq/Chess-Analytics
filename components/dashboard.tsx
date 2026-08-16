@@ -7,6 +7,7 @@ import { StatsCards } from "./stats-cards";
 import { TimeSpentChart } from "./time-spent-chart";
 import { RatingChart } from "./rating-chart";
 import { RatingAtGame } from "./rating-at-game";
+import { ChessChat } from "./chess-chat";
 import { DashboardSkeleton } from "./loading-skeleton";
 import { AnalyticsResponse, GameType, TimeRange } from "@/lib/data-processor";
 
@@ -109,6 +110,8 @@ export function Dashboard({ username }: { username: string }) {
       {/* Owns its own query, so it stays usable while the time-range data
           above is loading or has failed. */}
       <RatingAtGame username={username} gameType={gameType} />
+
+      <ChessChat username={username} />
 
       {data && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
