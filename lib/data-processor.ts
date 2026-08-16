@@ -1,15 +1,11 @@
 import { ChessGame } from "./chess-api";
-
-function parsePgnHeader(pgn: string, key: string): string | null {
-  const match = pgn.match(new RegExp(`\\[${key} "([^"]+)"\\]`));
-  return match ? match[1] : null;
-}
+import { parsePgnHeader } from "./pgn";
 
 function pgnTimeToSeconds(utcDate: string, time: string): number {
   return new Date(`${utcDate.replace(/\./g, "-")}T${time}Z`).getTime() / 1000;
 }
 
-function getGameDuration(game: ChessGame): number {
+export function getGameDuration(game: ChessGame): number {
   if (game.pgn) {
     const startDate = parsePgnHeader(game.pgn, "UTCDate");
     const startTime = parsePgnHeader(game.pgn, "StartTime");
